@@ -58,7 +58,6 @@ UML
 Интерфейсы и Классы
 Интерфейс IProduct
 typescript
-Копировать код
 interface IProduct {
     id: string;
     description: string;
@@ -77,7 +76,7 @@ category: Категория продукта.
 price: Цена продукта, может быть null.
 Класс Product
 typescript
-Копировать код
+
 class Product implements IProduct {
     id: string;
     description: string;
@@ -99,7 +98,7 @@ class Product implements IProduct {
 
 Интерфейс IBasket
 typescript
-Копировать код
+
 interface IBasket {
     items: Map<string, number>;
     add(id: string): void;
@@ -112,7 +111,7 @@ add(id: string): Метод для добавления продукта в ко
 remove(id: string): Метод для удаления продукта из корзины по его идентификатору.
 Класс Basket
 typescript
-Копировать код
+
 class Basket implements IBasket {
     items: Map<string, number>;
 
@@ -143,7 +142,7 @@ class Basket implements IBasket {
 
 Интерфейс ITopay
 typescript
-Копировать код
+
 interface ITopay {
     paymentMethod: boolean;
     address: string;
@@ -154,7 +153,7 @@ paymentMethod: Логическое значение, указывающее, и
 address: Адрес доставки.
 Класс ToPay
 typescript
-Копировать код
+
 class ToPay implements ITopay {
     paymentMethod: boolean;
     address: string;
@@ -168,7 +167,7 @@ class ToPay implements ITopay {
 
 Интерфейс IUser
 typescript
-Копировать код
+
 interface IUser {
     email: string;
     telephone: string;
@@ -179,7 +178,7 @@ email: Электронная почта пользователя.
 telephone: Телефонный номер пользователя.
 Класс User
 typescript
-Копировать код
+
 class User implements IUser {
     email: string;
     telephone: string;
@@ -193,7 +192,7 @@ class User implements IUser {
 
 Интерфейс IApiClient
 typescript
-Копировать код
+
 interface IApiClient {
     get<T>(uri: string): Promise<T>;
     post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
