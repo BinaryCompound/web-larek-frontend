@@ -1,4 +1,4 @@
-import {ApiPostMethods} from "../components/base/api"
+import { ApiPostMethods } from "../components/base/api"
 
 // Интерфейс товаров
 interface IProduct {
@@ -36,31 +36,43 @@ interface IBasket {
     remove(id: string): void;
 }
 
-// Модель корзины
-class Basket implements IBasket {
-    items: Map<string, number>;
+// Интерфейс презентера для корзины
+interface IBasketPresenter {
+    addProductToBasket(productId: string): void;
+    removeProductFromBasket(productId: string): void;
+}
 
-    constructor() {
-        this.items = new Map<string, number>();
+// Презентер для корзины
+class BasketPresenter implements IBasketPresenter {
+    private basket: IBasket;
+    private view: IBasketView;
+
+    constructor(basket: IBasket, view: IBasketView) {
+        this.basket = basket;
+        this.view = view;
     }
 
-    add(id: string): void {
-        if (this.items.has(id)) {
-            this.items.set(id, this.items.get(id)! + 1);
-        } else {
-            this.items.set(id, 1);
-        }
+    addProductToBasket(productId: string): void {
+        this.basket.add(productId);
+        this.view.updateBasket(this.basket.items);
     }
 
-    remove(id: string): void {
-        if (this.items.has(id)) {
-            const count = this.items.get(id)!;
-            if (count > 1) {
-                this.items.set(id, count - 1);
-            } else {
-                this.items.delete(id);
-            }
-        }
+    removeProductFromBasket(productId: string): void {
+        this.basket.remove(productId);
+        this.view.updateBasket(this.basket.items);
+    }
+}
+
+// Интерфейс представления для корзины
+interface IBasketView {
+    updateBasket(items: Map<string, number>): void;
+}
+
+// Пример представления для корзины
+class BasketView implements IBasketView {
+    updateBasket(items: Map<string, number>): void {
+        // Обновление отображения корзины
+        console.log("Basket updated: ", items);
     }
 }
 
