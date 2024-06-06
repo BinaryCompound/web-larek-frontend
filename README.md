@@ -111,7 +111,7 @@ BasketView
 Методы:
 updateBasket(items: Map<string, number>): void: Обновляет отображение корзины. Используется для визуального отображения изменений в корзине.
 Презентер
-IBasketPresenterz
+IBasketPresenter
 Назначение: Интерфейс презентера для корзины покупок.
 Методы:
 addProductToBasket(productId: string): void: Метод для добавления продукта в корзину.
