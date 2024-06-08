@@ -8,40 +8,62 @@ interface IProduct {
     price: number | null;
 }
 
+class Product implements IProduct {
+    constructor(
+        public id: string,
+        public description: string,
+        public image: string,
+        public title: string,
+        public category: string,
+        public price: number | null
+    ) {}
+}
+
 // Интерфейс корзины
 interface IBasket {
-    items: string;
+    items: IProduct[];
     add(id: string): void;
     remove(id: string): void;
 }
 
-// Интерфейс презентера для корзины
-interface IBasketPresenter {
-    addProductToBasket(productId: string): void;
-    removeProductFromBasket(productId: string): void;
+class Basket implements IBasket {
+    items: IProduct[] = [];
+
+    add(id: string): void {
+        // Здесь должен быть код для добавления товара в корзину
+    }
+
+    remove(id: string): void {
+        // Здесь должен быть код для удаления товара из корзины
+    }
 }
 
-// Интерфейс представления для корзины
-interface IBasketView {
-    updateBasket(items: Map<string, number>): void;
-}
-
-//Интерфейс способа оплаты
-interface ITopay {
-    paymentMethod: boolean
+// Интерфейс заказа
+interface IOrder {
+    paymentMethod: string
     address: string
-}
-
-//Интерфейс данных о пользователе
-interface IUser {
     email: string
     telephone: string
 }
 
-//Интерфейс api клиента
-interface IApiClient {
-    get<T>(uri: string): Promise<T>;
-    post<T>(uri: string, data: object): Promise<T>;
-    put<T>(uri: string, data: object): Promise<T>;
-    delete<T>(uri: string): Promise<T>;
+class Order implements IOrder {
+    constructor(
+        public paymentMethod: string,
+        public address: string,
+        public email: string,
+        public telephone: string
+    ) {}
+}
+
+// Интерфейс Пользователя
+interface IUser {
+    email: string;
+    telephone: string;
+}
+
+class User implements IUser {
+    constructor(
+        public email: string,
+        public telephone: string
+    ) {}
 }
