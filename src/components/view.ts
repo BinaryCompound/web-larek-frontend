@@ -1,12 +1,12 @@
 // Слой отображения
 
-import { IProduct, Product, IBasket, Basket, IOrder, Order, IUser, User } from './models';
+import { IProduct, Product, IBasket, Basket, basket, IOrder, Order, IUser, User } from './modal.ts';
 
 /**
  * Обновляет счетчик товаров в корзине.
  * @param count - Количество товаров в корзине.
  */
-function updateBasketCounter(count: number) {
+export function updateBasketCounter(count: number) {
   const counterElement = document.querySelector('.header__basket-counter');
   if (counterElement) {
     counterElement.textContent = count.toString();
@@ -17,7 +17,7 @@ function updateBasketCounter(count: number) {
  * Отображает список продуктов в галерее.
  * @param products - Массив продуктов для отображения.
  */
-function displayProducts(products: IProduct[]) {
+export function displayProducts(products: IProduct[]) {
   const gallery = document.querySelector('.gallery');
   if (!gallery) return;
 
@@ -42,7 +42,7 @@ function displayProducts(products: IProduct[]) {
  * Показывает детали продукта в модальном окне.
  * @param product - Продукт, детали которого нужно показать.
  */
-function showProductDetails(product: IProduct) {
+export function showProductDetails(product: IProduct) {
   const modal = document.getElementById('modal-container');
   if (!modal) return;
 
@@ -66,18 +66,18 @@ function showProductDetails(product: IProduct) {
  * Добавляет продукт в корзину.
  * @param product - Продукт для добавления в корзину.
  */
-function addToBasket(product: IProduct) {
+export function addToBasket(product: IProduct) {
   // Логика добавления продукта в корзину
-  // Пример: basket.add(product);
+  basket.add(product);
   console.log('Продукт добавлен в корзину:', product);
-  updateBasketCounter(Basket.items.length);
+  updateBasketCounter(basket.items.length);
 }
 
 /**
  * Обновляет список продуктов в корзине.
  * @param basket - Объект корзины.
  */
-function updateBasketView(basket: IBasket) {
+export function updateBasketView(basket: IBasket) {
   const basketList = document.querySelector('.basket__list');
   if (!basketList) return;
 
@@ -107,19 +107,19 @@ function updateBasketView(basket: IBasket) {
  * Удаляет продукт из корзины.
  * @param productId - Идентификатор продукта для удаления.
  */
-function removeFromBasket(productId: string) {
+export function removeFromBasket(productId: string) {
   // Логика удаления продукта из корзины
-  Basket.remove(productId);
+  basket.remove(productId);
   console.log('Продукт удален из корзины:', productId);
-  updateBasketView(Basket);
-  updateBasketCounter(Basket.items.length);
+  updateBasketView(basket);
+  updateBasketCounter(basket.items.length);
 }
 
 /**
  * Инициализирует форму заказа.
  * @param order - Объект заказа.
  */
-function initOrderForm(order: IOrder) {
+export function initOrderForm(order: IOrder) {
   const orderForm = document.forms.namedItem('order') as HTMLFormElement;
   if (!orderForm) return;
 
@@ -135,7 +135,7 @@ function initOrderForm(order: IOrder) {
  * Инициализирует форму контактной информации.
  * @param user - Объект пользователя.
  */
-function initContactForm(user: IUser) {
+export function initContactForm(user: IUser) {
   const contactForm = document.forms.namedItem('contacts') as HTMLFormElement;
   if (!contactForm) return;
 
@@ -149,7 +149,7 @@ function initContactForm(user: IUser) {
 /**
  * Показывает сообщение об успешном оформлении заказа.
  */
-function showOrderSuccess() {
+export function showOrderSuccess() {
   const modal = document.getElementById('modal-container');
   if (!modal) return;
 

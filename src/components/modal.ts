@@ -1,5 +1,5 @@
 //Модели данных 
-interface IProduct {
+export interface IProduct {
     id: string;
     description: string;
     image: string;
@@ -8,7 +8,7 @@ interface IProduct {
     price: number | null;
   }
   
-  class Product implements IProduct {
+  export class Product implements IProduct {
     constructor(
       public id: string,
       public description: string,
@@ -19,13 +19,13 @@ interface IProduct {
     ) {}
   }
 
-  interface IBasket {
+  export interface IBasket {
     items: IProduct[];
     add(product: IProduct): void;
     remove(id: string): void;
   }
   
-  class Basket implements IBasket {
+  export class Basket implements IBasket {
     items: IProduct[] = [];
   
     add(product: IProduct) {
@@ -37,14 +37,16 @@ interface IProduct {
     }
   }
 
-  interface IOrder {
+  export const basket = new Basket();
+
+  export interface IOrder {
     paymentMethod: string;
     address: string;
     email: string;
     telephone: string;
   }
   
-  class Order implements IOrder {
+  export class Order implements IOrder {
     constructor(
       public paymentMethod: string,
       public address: string,
@@ -53,11 +55,11 @@ interface IProduct {
     ) {}
   }
 
-  interface IUser {
+  export interface IUser {
     email: string;
     telephone: string;
   }
   
-  class User implements IUser {
+  export class User implements IUser {
     constructor(public email: string, public telephone: string) {}
   }

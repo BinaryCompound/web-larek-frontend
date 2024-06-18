@@ -1,4 +1,4 @@
-
+import { API_URL, CDN_URL } from "../../utils/constants";
 
 export type ApiListResponse<Type> = {
     total: number,
@@ -11,7 +11,7 @@ export class Api {
     readonly baseUrl: string;
     protected options: RequestInit;
 
-    constructor(baseUrl: string, options: RequestInit = {}) {
+    constructor(baseUrl: string = API_URL, options: RequestInit = {}) {
         this.baseUrl = baseUrl;
         this.options = {
             headers: {
@@ -42,3 +42,6 @@ export class Api {
         }).then(this.handleResponse);
     }
 }
+
+const api = new Api(); // Использует API_URL по умолчанию
+const cdnApi = new Api(CDN_URL); // Использует CDN_URL
