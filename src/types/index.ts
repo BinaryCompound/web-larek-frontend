@@ -1,63 +1,37 @@
-import { Product } from '../components/AppData';
-
-export type CategoryType =
-  | 'другое'
-  | 'софт-скил'
-  | 'дополнительное'
-  | 'кнопка'
-  | 'хард-скил';
-
-export type CategoryMapping = {
-  [Key in CategoryType]: string;
-};
-
-export type FormErrors = Partial<Record<keyof IOrderForm, string>>;
-
-export interface ApiResponse {
-  items: IProduct[];
+export type PaymentMethod = 'cash' | 'card';
+export type TSuccessData = {id: string; total: number};
+//Интерфейс продукта
+export interface IProductItem {
+    id: string;
+    description: string;
+    image: string;
+    title: string;
+    categoty: string;
+    price: number | null;
 }
 
-export interface IProduct {
-  id: string;
-  description: string;
-  image: string;
-  title: string;
-  category: CategoryType;
-  price: number | null;
-  selected: boolean;
+// Интерфейс Управления продуктами
+export interface IProductManager {
+    setProducts(products: IProductItem[]): void;  // Установка массива продуктов
+    getAllProducts(): IProductItem[];  // Получение всего массива продуктов
 }
 
-export interface IAppState {
-  basket: Product[];
-  store: Product[];
-  order: IOrder;
-  formErrors: FormErrors;
-  addToBasket(value: Product): void;
-  deleteFromBasket(id: string): void;
-  clearBasket(): void;
-  getBasketAmount(): number;
-  getTotalBasketPrice(): number;
-  setItems(): void;
-  setOrderField(field: keyof IOrderForm, value: string): void;
-  validateContacts(): boolean;
-  validateOrder(): boolean;
-  refreshOrder(): boolean;
-  setStore(items: IProduct[]): void;
-  resetSelected(): void;
-}
+export interface IAppApi {
+    getProducts(): Promise<IProductItem[]>;
+    postOrder(order: IOrder): Promise<TSuccessData>;
+  }
 
+//То, что приходит с сервера в постмане(коллекция всех продуктов)
+export interface IProductList {
+    total: number;
+    items: string[];
+}
+//То, какие данные содержит заказ
 export interface IOrder {
-  items: string[];
-  payment: string;
-  total: number;
-  address: string;
-  email: string;
-  phone: string;
-}
-
-export interface IOrderForm {
-  payment: string;
-  address: string;
-  email: string;
-  phone: string;
+    payMethod: PaymentMethod;
+    email: string;
+    address: string;
+    telephone: string;
+    total: number;
+    items: string[];
 }
