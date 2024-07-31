@@ -9,15 +9,20 @@ export class AppApi extends Api implements IAppApi {
     this.cdn = cdn;
   }
 
-  getProducts(): Promise<IProductItem[]> {
-    return this.get('/product').then((list: ApiListResponse<IProductItem>) => {
-      return list.items.map((item) => { return {...item, image: this.cdn + item.image}})
-    })
+  async getProducts(): Promise<IProductItem[]> {
+    return this.get<ApiListResponse<IProductItem>>('/product').then((list) => {
+      return list.items.map((item) => {
+        return { ...item, image: this.cdn + item.image };
+      });
+    });
   }
 
-  postOrder(order: IOrder): Promise<TSuccessData> {
-    return this.post('/order', order).then((success: TSuccessData) => {
+  async postOrder(order: IOrder): Promise<TSuccessData> {
+    return this.post<TSuccessData>('/order', order).then((success) => {
       return success
     })
   }
+
 }  
+
+

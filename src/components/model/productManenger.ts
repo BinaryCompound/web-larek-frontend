@@ -1,4 +1,4 @@
-import { IProductItem, IProductManager } from "../types";
+import { IProductItem, IProductManager } from "../../types";
 
 class ProductManager implements IProductManager {
     private products: IProductItem[] = [];
