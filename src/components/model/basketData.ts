@@ -1,4 +1,5 @@
-import { IBasketData, IProductItem } from "../../types";
+/*import { IBasketData, IProductItem } from "../../types";
+import { IEvents } from '../base/events';
 
 class ShoppingCart implements IBasketData {
     private products: IProductItem[] = [];
@@ -44,3 +45,4 @@ class ShoppingCart implements IBasketData {
       }, 0);
     }
   }
+    */

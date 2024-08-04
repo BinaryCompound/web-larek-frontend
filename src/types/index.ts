@@ -9,7 +9,7 @@ export interface IProductItem {
 }
 
 export interface IProductItemData {
-    _products: IProductItem[]
+    products: IProductItem[];
 }
 
 // Интерфейс корзины
@@ -24,7 +24,7 @@ export interface IBasketData {
 }
 
 // Интерфейс управления продуктами
-export interface IProductManager {
+export interface IProductData {
     setProducts(products: IProductItem[]): void;  // установка массива продуктов
     getAllProducts(): IProductItem[]; // получение всего массива продуктов
 }
@@ -50,6 +50,11 @@ export interface IOrder {
     total: number;
     items: string[];
 }
+
+// Интерфейс успешного заказа
+export interface IOrderSuccess {
+    orderSuccess: TOrderSuccess;
+  }
 
 //Интерфейс модальных окон
 export interface IModal {
@@ -113,3 +118,4 @@ export type TBasketInfo = Pick<IOrder, 'total' | 'items'>; // Модальное
 export type TModal = { content: HTMLElement };
 export type TCategoryClassNames = 'soft' | 'other' | 'additional' | 'button' | 'hard';
 export type TCategoryClasses = Record<string, TCategoryClassNames>;
+export type TOrderSuccess =  Pick<IOrder, 'items' | 'total'>;
