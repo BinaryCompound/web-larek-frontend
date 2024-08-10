@@ -5,7 +5,7 @@ export interface IProductItem {
     image: string;
     title: string;
     category: string;
-    price: number | null;
+    price: number;
 }
 
 export interface IProductItemData {
@@ -14,14 +14,16 @@ export interface IProductItemData {
 
 // Интерфейс корзины
 export interface IBasketData {
-    addProduct(product: IProductItem): void; // добавить продукт в корзину
-    removeProduct(product: IProductItem): void; // удалить продукт из корзины
-    getNumberOfProducts(): number; // получить общее количество продуктов
-    checkProduct(id: string): boolean; // проверка, есть ли уже товар в корзине (чтобы не добавлять его ещё раз)
-    getProducts(): IProductItem[]; //получает массив продуктов 
-    getProductIds(): string[]; // получить массив id продуктов
-    getTotalAmount(): number; // получить общую сумму всех продуктов в корзине
-}
+    goods: IProductItem[];
+    total: number;
+    isInBasket(id:string): boolean;
+    addToBasket(card: IProductItem): void;
+    removeFromBasket(id: string): void;
+    clearBasket(): void;
+    getGoodsNumber(): number;
+    getTotal(): number;
+    getIdsOfGoods(): string[];
+  }
 
 // Интерфейс управления продуктами
 export interface IProductData {
@@ -31,8 +33,9 @@ export interface IProductData {
 
 // Интерфейс для модели данных Api
 export interface IAppApi {
-    getProducts(): Promise<IProductItem[]>;
-    postOrder(order: IOrder): Promise<TSuccessData>;
+    getCards(): Promise<IProductItem[]>;
+    getCardById(id: string): Promise<IProductItem>;
+    postOrder(order: IOrder): Promise<TOrderSuccess>;
 }
 
 // Интерфейс массива продуктов
@@ -54,7 +57,7 @@ export interface IOrder {
 // Интерфейс успешного заказа
 export interface IOrderSuccess {
     orderSuccess: TOrderSuccess;
-  }
+}
 
 //Интерфейс модальных окон
 export interface IModal {
@@ -65,7 +68,7 @@ export interface IModal {
 }
 
 //Интерфейс представления карточки
-export interface ICard {
+export interface IProduct {
     id: string;
     title: string;
     price: string;
@@ -75,8 +78,13 @@ export interface ICard {
 
 // Интерфейс представления корзины
 export interface IBasket {
-    basketInfo: TBasketInfo;
+    cards: HTMLElement[];
+    total: number;
     emptyCheck: boolean;
+}
+
+export interface IProductBasket {
+    index: number;
 }
 
 //Интерфейс представления формы
@@ -85,7 +93,6 @@ export interface IForm {
     errorMessage: string;
     clear(): void;
 }
-
 
 //Интерфейс представления формы заказа
 export interface IFormOrder {
@@ -96,12 +103,12 @@ export interface IFormOrder {
 
 //Интерфейс представления контактов пользователя
 export interface IFormUserContacts {
-userInfo: TUserInfo;
+    userInfo: TUserInfo;
 }
 
 //Интерфейс представления успешной покупки
 export interface ISuccess {
-    message: TSuccessData;
+    message: TOrderSuccess;
 }
 
 //Интерфейс представления каталога
@@ -110,12 +117,36 @@ export interface IPage {
     catalog: HTMLElement[];
 }
 
+export interface IProductCatalog {
+    category: string;
+}
+
+export interface IViewCardPreview {
+    category: string;
+    invalidPrice: boolean;
+    buttonValidation: boolean;
+}
+
+export interface IProductPreview {
+    category: string;
+    invalidPrice: boolean;
+    buttonValidation: boolean;
+}
+
+export type TOrderSuccess =  Pick<IOrder, 'items' | 'total'>;
 export type PaymentMethod = 'cash' | 'card'; //Метод оплаты
-export type TSuccessData = { id: string; total: number };
 export type TUserInfo = Pick<IOrder, 'phone' | 'email'>; // Модалка данных пользователя с формой
 export type TPlacingOrderInfo = Pick<IOrder, 'address' | 'payment'>; // Модалка оплаты заказа с формой
+export type TBasket = { cards: HTMLElement[], total: number, emptyCheck: boolean };
 export type TBasketInfo = Pick<IOrder, 'total' | 'items'>; // Модальное окно карзины
 export type TModal = { content: HTMLElement };
+export type TProductPreview = IProductItem & { invalidPrice: boolean; buttonValidation: boolean };
+export type TProductBasket = Pick<IProductItem, 'id' | 'title' | 'price'> & { index: number };
 export type TCategoryClassNames = 'soft' | 'other' | 'additional' | 'button' | 'hard';
 export type TCategoryClasses = Record<string, TCategoryClassNames>;
-export type TOrderSuccess =  Pick<IOrder, 'items' | 'total'>;
+export type TProductCatalog = Pick<IProductItem, 'id' | 'title' | 'price' | 'category' | 'image'>;
+export type TForm = { valid: boolean; errorMessage: string; };
+export type TFormContacts = { email: string; phone: string; valid: Boolean };
+export type TPayment = Pick<IOrder, 'payment'>;
+export type TFormOrder = { payment: TPayment; address: string; valid: Boolean };
+export type TId = Pick<IProduct, 'id'>;

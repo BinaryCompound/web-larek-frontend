@@ -1,7 +1,7 @@
 import { IModal, TModal } from "../../types";
 import { View } from "./View";
 import { ensureElement } from "../../utils/utils";
-import { IEvents } from "../base/Events";
+import { IEvents } from "../base/events";
 
 export class Modal extends View<TModal> implements IModal {
   _content: HTMLElement;
