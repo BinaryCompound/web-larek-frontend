@@ -7,18 +7,19 @@ export class FormContacts extends Form<TFormContacts> implements TFormContacts {
   protected emailInput: HTMLInputElement;
   protected telephoneInput: HTMLInputElement;
 
-  constructor(container: HTMLElement, events:IEvents){
+  constructor(container: HTMLElement, events: IEvents) {
     super(container, events);
     this.emailInput = ensureElement<HTMLInputElement>('.form__input[name=email]', container);
     this.telephoneInput = ensureElement<HTMLInputElement>('.form__input[name=phone]', container);
+
     this.emailInput.addEventListener('input', () => {
       this.events.emit('email:input'); 
-      this.events.emit('contacts:valid')
-    })
+      this.events.emit('contacts:valid');
+    });
     this.telephoneInput.addEventListener('input', () => {
-      this.events.emit('telephone:input')
-      this.events.emit('contacts:valid')
-    })
+      this.events.emit('telephone:input');
+      this.events.emit('contacts:valid');
+    });
   }
 
   get email() {
@@ -26,28 +27,27 @@ export class FormContacts extends Form<TFormContacts> implements TFormContacts {
   }
 
   get phone() {
-    return this.telephoneInput.value
+    return this.telephoneInput.value;
   }
 
   get valid() {
-    if(Boolean(this.emailInput.value) && Boolean(this.telephoneInput.value)) {
-      this.errorMessage ='';
-      return true
-    }
-    else if(!Boolean(this.emailInput.value) && !Boolean(this.telephoneInput.value)) {
-      this.errorMessage ='Заполните поля электронной почты и телефона';
-      return false
-    }
-    else if(!Boolean(this.emailInput.value) && Boolean(this.telephoneInput.value)) {
-      this.errorMessage ='Заполните поле электронной почты';
-      return false
-    }
-    else if(Boolean(this.emailInput.value) && !Boolean(this.telephoneInput.value)) {
-      this.errorMessage ='Заполните поле телефона';
-      return false
+    const emailFilled = this.emailInput.value.trim() !== '';
+    const telephoneFilled = this.telephoneInput.value.trim() !== '';
+
+    if (emailFilled && telephoneFilled) {
+      this.errorMessage = '';
+      return true;
     }
 
-    return false
+    if (!emailFilled && !telephoneFilled) {
+      this.errorMessage = 'Заполните поля электронной почты и телефона';
+    } else if (!emailFilled) {
+      this.errorMessage = 'Заполните поле электронной почты';
+    } else if (!telephoneFilled) {
+      this.errorMessage = 'Заполните поле телефона';
+    }
+
+    return false;
   }
 
   set valid(value: boolean) {
