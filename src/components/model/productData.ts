@@ -3,7 +3,8 @@ import { IEvents } from '../base/events';
 
 export class ProductItem implements IProductItemData {
 
-  getCard(id: string) {                                  //находит карточку товара по id 
+  //находит карточку товара по id 
+  getCard(id: string) {
     return this.cards.find((card: { id: string; }) => {
       if (card.id === id) {
         return card
