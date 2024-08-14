@@ -38,6 +38,4 @@ export class Modal<IModal> extends View<IModal> {
   set content(value: HTMLElement) {
     this._content.replaceChildren(value);
   }
-
-
 }

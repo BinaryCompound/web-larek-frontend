@@ -18,6 +18,7 @@ export class Modal extends View<TModal> implements IModal {
   }
 
   open() {
+    console.log("Modal is opening"); 
     this.container.classList.add('modal_active')
     this.events.emit('modal:open')
   }

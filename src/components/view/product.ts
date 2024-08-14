@@ -85,20 +85,4 @@ export abstract class Product<T> extends View<T> implements IProduct {
             this._category.classList.add(`card__category_${categories[value]}`)
         }
     }
-
-    // запись данных категории товара (текстКонтент и доп класс)
-    set category(value: string) {
-        this.addClassToCategory(value);
-        if (this._category) {
-            this.setText(this._category, value);
-        }
-    }
-
-    // получение категории товара (текстКонтента или ничего, если категория нулевая или неопределенная)
-    get category() {
-        if (this._category) {
-            return this._category.textContent ?? '';
-        }
-        return '';
-    }
 }

@@ -66,27 +66,20 @@ const loadProducts = async () => {
     }
 };
 
-
 // Обработка изменения данных о товарах
 events.on('cards:changed', (products: IProductItem[]) => {
     console.log('Событие cards полученно c продуктами:', products);
 
-  /*  if (!Array.isArray(products)) {
-        console.error('Invalid data format received:', products);
-        return;
-    }*/
-
     const productsList = products.map(product => {
         try {
             const viewProduct = new ProductItemCatalogue<IProductCatalog>(cloneTemplate(elements.templates.cardCatalog), events);
-            console.log('viewProduct:',viewProduct)
+            console.log('viewProduct:', viewProduct);
             return viewProduct.render(product);
         } catch (error) {
             console.error('Error rendering product:', error);
             return null;
         }
-    })
-    /*.filter(item => item !== null);*/
+    }).filter(item => item !== null);
 
     console.log('ProductsList to render:', productsList);
     views.page.render({ catalog: productsList });
@@ -97,7 +90,7 @@ events.on('modal:open', () => views.page.lockScreen(true));
 events.on('modal:close', () => views.page.lockScreen(false));
 
 // Обработка открытия модального окна с карточкой товара
-events.on('ProductPreview:open', (dataId: TId) => {
+events.on('modal:open', (dataId: TId) => {
     const cardToPreview = productData.getCard(dataId.id);
     if (cardToPreview) {
         views.modal.render({
