@@ -25,7 +25,7 @@ export class CardModal<T> extends View<T> {
   // Открыть модальное окно
   open() {
     this.toggleClass(this.container, 'modal_active', true);
-    this.events.emit('productModal:open');
+    //this.events.emit('productModal:open');
   }
 
   // Закрыть модальное окно
@@ -38,4 +38,5 @@ export class CardModal<T> extends View<T> {
   set content(value: HTMLElement) {
     this._content.replaceChildren(value);
   }
+
 }

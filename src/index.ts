@@ -40,6 +40,7 @@ const elements = {
         success: ensureElement<HTMLTemplateElement>('#success')
     }
 };
+console.log('темплейт карточки(cardPreview):', elements.templates.cardPreview);
 
 // Инициализация представлений
 const views = {
@@ -91,20 +92,22 @@ events.on('cards:changed', (products: IProductItem[]) => {
 
 // Обработка открытия модального окна с карточкой товара
 events.on('productModal:open', (dataId: TId) => {
-    console.log('Received dataId:', dataId); // Логирование объекта dataId
     const cardToPreview = productData.getCard(dataId.id);
-
     if (cardToPreview) {
+        const invalidPrice = !cardToPreview.price;
+        const buttonValidation = basketData.isInBasket(cardToPreview.id);
         const content = views.cardPreview.render({
             ...cardToPreview,
-            invalidPrice: !cardToPreview.price,
-            buttonValidation: basketData.isInBasket(cardToPreview.id)
+            invalidPrice,
+            buttonValidation
         });
+        console.log('content', content);
 
         views.cardModal.content = content;
         views.cardModal.open();
     }
 });
+
 
 // Инициализация приложения
 loadProducts();

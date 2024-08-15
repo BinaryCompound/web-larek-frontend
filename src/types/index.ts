@@ -149,4 +149,4 @@ export type TForm = { valid: boolean; errorMessage: string; };
 export type TFormContacts = { email: string; phone: string; valid: Boolean };
 export type TPayment = Pick<IOrder, 'payment'>;
 export type TFormOrder = { payment: TPayment; address: string; valid: Boolean };
-export type TId = Pick<IProduct, 'id'>;
+export type TId = {id: string};
