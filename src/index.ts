@@ -1,4 +1,3 @@
-// Импортируйте необходимые модули (например, если вы используете Webpack)
 import './scss/styles.scss';
 import { IAppApi, IProduct, IProductCatalog, IProductItem, TId, TOrderSuccess } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
