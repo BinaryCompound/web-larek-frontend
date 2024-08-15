@@ -1,3 +1,4 @@
+// Импортируйте необходимые модули (например, если вы используете Webpack)
 import './scss/styles.scss';
 import { IAppApi, IProduct, IProductCatalog, IProductItem, TId, TOrderSuccess } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
@@ -12,7 +13,8 @@ import { cloneTemplate, ensureElement } from './utils/utils';
 import { ProductItemCatalogue } from './components/view/productCatalog';
 import { ProductPreview } from './components/view/ProductPreview';
 import { Page } from './components/view/page';
-import { Modal } from './components/view/vmodal';
+import { CardModal } from './components/view/vmodal';
+import { Modal } from './components/view/modal';
 import { ProductInBasket } from './components/view/productInBasket';
 import { Basket } from './components/view/basket';
 import { FormContacts } from './components/view/formContact';
@@ -44,6 +46,7 @@ const elements = {
 const views = {
     page: new Page(elements.containerPage, events),
     modal: new Modal(elements.containerModal, events),
+    cardModal: new CardModal(elements.containerModal, events),
     cardPreview: new ProductPreview(cloneTemplate(elements.templates.cardPreview), events),
     basket: new Basket(cloneTemplate(elements.templates.basket), events),
     formOrder: new FormOrder(cloneTemplate(elements.templates.order), events),
@@ -58,7 +61,6 @@ const api: IAppApi = new AppApi(CDN_URL, API_URL);
 const loadProducts = async () => {
     try {
         const data = await api.getCards();
-        console.log('Loaded products:', data);
         productData.products = data;
         events.emit('cards:changed', data);
     } catch (error) {
@@ -68,41 +70,45 @@ const loadProducts = async () => {
 
 // Обработка изменения данных о товарах
 events.on('cards:changed', (products: IProductItem[]) => {
-    console.log('Событие cards полученно c продуктами:', products);
-
     const productsList = products.map(product => {
         try {
             const viewProduct = new ProductItemCatalogue<IProductCatalog>(cloneTemplate(elements.templates.cardCatalog), events);
-            console.log('viewProduct:', viewProduct);
-            return viewProduct.render(product);
+            const renderedProduct = viewProduct.render(product);
+
+            // Добавление обработчика клика для открытия модального окна
+            renderedProduct.addEventListener('click', () => {
+                events.emit('productModal:open', { id: product.id });
+            });
+
+            return renderedProduct;
         } catch (error) {
             console.error('Error rendering product:', error);
             return null;
         }
     }).filter(item => item !== null);
 
-    console.log('ProductsList to render:', productsList);
     views.page.render({ catalog: productsList });
 });
 
-// Обработка открытия и закрытия модального окна
-events.on('modal:open', () => views.page.lockScreen(true));
-events.on('modal:close', () => views.page.lockScreen(false));
-
 // Обработка открытия модального окна с карточкой товара
-events.on('modal:open', (dataId: TId) => {
+events.on('productModal:open', (dataId: TId) => {
+    console.log('Received dataId:', dataId); // Логирование объекта dataId
     const cardToPreview = productData.getCard(dataId.id);
+
     if (cardToPreview) {
-        views.modal.render({
-            content: views.cardPreview.render({
-                ...cardToPreview,
-                invalidPrice: !cardToPreview.price,
-                buttonValidation: basketData.isInBasket(cardToPreview.id)
-            })
+        const content = views.cardPreview.render({
+            ...cardToPreview,
+            invalidPrice: !cardToPreview.price,
+            buttonValidation: basketData.isInBasket(cardToPreview.id)
         });
-        views.modal.open();
+
+        views.cardModal.content = content;
+        views.cardModal.open();
     }
 });
+
+// Инициализация приложения
+loadProducts();
 
 // Обработка добавления и удаления товара из корзины
 events.on('viewCard:addToBasket', (dataId: TId) => {
@@ -208,6 +214,3 @@ events.on('contacts:submit', async () => {
 events.on('success:submit', () => {
     views.modal.close();
 });
-
-// Инициализация приложения
-loadProducts();
