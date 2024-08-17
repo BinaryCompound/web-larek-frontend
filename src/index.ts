@@ -67,6 +67,9 @@ const loadProducts = async () => {
     }
 };
 
+events.on('modal:open', () => views.page.lockScreen(true));
+events.on('modal:close', () => views.page.lockScreen(false));
+
 // Обработка изменения данных о товарах
 events.on('cards:changed', (products: IProductItem[]) => {
     const productsList = products.map(product => {
@@ -89,9 +92,6 @@ events.on('cards:changed', (products: IProductItem[]) => {
     views.page.render({ catalog: productsList });
 });
 
-events.on('modal:open', () => views.page.lockScreen(true));
-events.on('modal:close', () => views.page.lockScreen(false));
-
 // Обработка открытия модального окна с карточкой товара
 events.on('productModal:open', (dataId: TId) => {
     const cardToPreview = productData.getCard(dataId.id);
@@ -108,7 +108,6 @@ events.on('productModal:open', (dataId: TId) => {
         views.cardModal.open();
     }
 });
-
 
 // Инициализация приложения
 loadProducts();
@@ -149,12 +148,13 @@ events.on('viewBasket:open', () => {
     views.modal.open();
 });
 
-events.on('viewOrder:open', () => {
+events.on('order:open', () => {
     orderData.total = basketData.getTotal();
     orderData.items = basketData.getIdsOfGoods();
     views.modal.render({
         content: views.formOrder.render({ valid: views.formOrder.valid, errorMessage: '' })
     });
+    views.modal.open();
 });
 
 // Обработка ввода данных в форму заказа и валидация

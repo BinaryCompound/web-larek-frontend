@@ -5,28 +5,43 @@ import { ensureElement } from "../../utils/utils";
 
 
 export class Basket extends View<TBasket> implements IBasket {
-  protected _cardList: HTMLUListElement;          //DOM элемент списка карточек товаров, добавленных в корзину 
-  protected totalCost: HTMLSpanElement;           //DOM элемент спана с общей стоимостью товаров, добвленных в корзину
-  protected basketToOrder: HTMLButtonElement;     //DOM элемент кнопки передачи товаров в заказ - "Оформить"
+  // DOM элемент для списка товаров, добавленных в корзину 
+  protected _cardList: HTMLUListElement;
 
-  constructor(container: HTMLElement, events:IEvents) {
+  // DOM элемент для отображения общей стоимости товаров в корзине
+  protected totalCost: HTMLSpanElement;
+
+  // DOM элемент кнопки "Оформить заказ"
+  protected basketToOrder: HTMLButtonElement;
+
+  constructor(container: HTMLElement, events: IEvents) {
     super(container, events)
+
+    // Инициализация списка товаров, добавленных в корзину
     this._cardList = ensureElement<HTMLUListElement>('.basket__list', container);
+
+    // Инициализация элемента для отображения общей стоимости товаров
     this.totalCost = ensureElement<HTMLSpanElement>('.basket__price', container);
+
+    // Инициализация кнопки "Оформить заказ"
     this.basketToOrder = ensureElement<HTMLButtonElement>('.basket__button', container);
 
+    // Добавление обработчика события для кнопки "Оформить заказ"
     this.basketToOrder.addEventListener('click', () => this.events.emit('order:open'))
   }
 
-  set cards(items: HTMLElement[]) {               // устанавливает список карточек добавленных товаров в корзину
+  // Обновляет список товаров, добавленных в корзину
+  set cards(items: HTMLElement[]) {
     this._cardList.replaceChildren(...items)
   }
 
-  set total(value: number) {                      // устанавливает общую стоимость товаров
+  // Обновляет отображаемую общую стоимость товаров
+  set total(value: number) {
     this.setText(this.totalCost, `${value} синапсов`);
   }
 
-  set emptyCheck(state: boolean) {                // блокирует кнопку "Оформить" в пустой корзине
+  // Отключает кнопку "Оформить заказ", если корзина пуста
+  set emptyCheck(state: boolean) {
     this.setDisabled(this.basketToOrder, state);
   }
 }
