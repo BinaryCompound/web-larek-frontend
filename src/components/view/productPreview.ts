@@ -3,9 +3,14 @@ import { IEvents } from "../base/events";
 import { ensureElement } from "../../utils/utils";
 import { View } from "./View";
 
-export class ProductPreview<TViewCardPreview> extends View<TViewCardPreview> implements IProductPreview {
+export class ProductPreview extends View<IProductItem> implements IProductPreview, IProductItem {
     protected buttonBuy: HTMLButtonElement;
+    title: string;
     category: string;
+    protected container: HTMLElement;
+    price: number;
+    image: string;
+    description: string;
     id: string;
 
     constructor(container: HTMLElement, events: IEvents) {
@@ -38,5 +43,16 @@ export class ProductPreview<TViewCardPreview> extends View<TViewCardPreview> imp
         else {
             this.setText(this.buttonBuy, 'Купить')
         }
+    }
+
+    render(data?: Partial<IProductItem & {invalidPrice: boolean; buttonValidation: boolean}>): HTMLElement {
+        super.render(data);
+
+        this.setText(this.container.querySelector('.card__title'), this.title);
+        this.setText(this.container.querySelector('.card__price'), this.price + ' руб.');
+        this.setText(this.container.querySelector('.card__category'), this.category);
+        this.setImage(this.container.querySelector('.card__image'), this.image, data.title);
+
+        return this.container;
     }
 }

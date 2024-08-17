@@ -10,7 +10,7 @@ import { Success } from './components/model/successData';
 import { FormOrder } from './components/view/orderForm';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { ProductItemCatalogue } from './components/view/productCatalog';
-import { ProductPreview } from './components/view/ProductPreview';
+import { ProductPreview } from './components/view/productPreview';
 import { Page } from './components/view/page';
 import { CardModal } from './components/view/vmodal';
 import { Modal } from './components/view/modal';
@@ -40,7 +40,6 @@ const elements = {
         success: ensureElement<HTMLTemplateElement>('#success')
     }
 };
-console.log('темплейт карточки(cardPreview):', elements.templates.cardPreview);
 
 // Инициализация представлений
 const views = {
@@ -90,6 +89,9 @@ events.on('cards:changed', (products: IProductItem[]) => {
     views.page.render({ catalog: productsList });
 });
 
+events.on('modal:open', () => views.page.lockScreen(true));
+events.on('modal:close', () => views.page.lockScreen(false));
+
 // Обработка открытия модального окна с карточкой товара
 events.on('productModal:open', (dataId: TId) => {
     const cardToPreview = productData.getCard(dataId.id);
@@ -101,7 +103,6 @@ events.on('productModal:open', (dataId: TId) => {
             invalidPrice,
             buttonValidation
         });
-        console.log('content', content);
 
         views.cardModal.content = content;
         views.cardModal.open();

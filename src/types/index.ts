@@ -25,12 +25,6 @@ export interface IBasketData {
     getIdsOfGoods(): string[];
   }
 
-// Интерфейс управления продуктами
-export interface IProductData {
-    setProducts(products: IProductItem[]): void;  // установка массива продуктов
-    getAllProducts(): IProductItem[]; // получение всего массива продуктов
-}
-
 // Интерфейс для модели данных Api
 export interface IAppApi {
     getCards(): Promise<IProductItem[]>;
