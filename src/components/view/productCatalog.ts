@@ -3,6 +3,7 @@ import { ensureElement } from "../../utils/utils";
 import { IEvents } from "../base/events";
 import { Product } from "./product";
 import { categories } from "../../utils/constants"
+
 export class ProductItemCatalogue<TProductCatalog> extends Product<TProductCatalog> implements IProductCatalog {
   protected _image: HTMLImageElement;
   protected _category: HTMLSpanElement;

@@ -3,7 +3,7 @@ import { IEvents } from '../base/events';
 
 export class ShoppingCart implements IBasketData {
   protected _goods: IProductItem[] = [];
-  total: 0;
+  total: number = 0;
   events: IEvents;
 
   constructor(events: IEvents) {
@@ -11,59 +11,65 @@ export class ShoppingCart implements IBasketData {
   }
 
   get goods() {
-    return this._goods
+    return this._goods;
   }
 
   set goods(cards: IProductItem[]) {
     this._goods = cards;
+    this.checkEmpty();  // Проверяем корзину на пустоту при изменении товаров
   }
 
-  isInBasket(id: string) {                                                     // проверяет наличие продукта в корзине по id
+  isInBasket(id: string): boolean {  // Проверяет наличие продукта в корзине по id
     return Boolean(this._goods.find(good => good.id === id));
   }
 
-  checkBasket(id: string) {
-    if (this.isInBasket(id) === true) {
-      this.events.emit('addToBasket:disabled')
+  checkBasket(id: string): void {
+    if (this.isInBasket(id)) {
+      this.events.emit('addToBasket:disabled');
     }
   }
 
-  addToBasket(card: IProductItem) {                                                   //добавить в корзину
-    this._goods.push(card)
-    this.total += card.price
-    this.events.emit('basketData:changed', { id: card.id })
+  addToBasket(card: IProductItem): void {  // Добавляет товар в корзину
+    this._goods.push(card);
+    this.total += card.price;
+    this.checkEmpty();  // Проверяем корзину на пустоту после добавления
+    this.events.emit('basketData:changed', { id: card.id });
   }
 
-  removeFromBasket(id: string) {                                               //удалить из корзины
-    this._goods = this._goods.filter((good) => { return good.id !== id })
-    this.events.emit('basketData:changed', { id })
-
+  removeFromBasket(id: string): void {  // Удаляет товар из корзины по id
+    const removedGood = this._goods.find(good => good.id === id);
+    if (removedGood) {
+      this.total -= removedGood.price;
+    }
+    this._goods = this._goods.filter(good => good.id !== id);
+    this.checkEmpty();  // Проверяем корзину на пустоту после удаления
+    this.events.emit('basketData:changed', { id });
   }
 
-  clearBasket() {
-    //очистить корзину
+  clearBasket(): void {
     this._goods = [];
-    this.total === 0;
+    this.total = 0;
+    this.checkEmpty();  // Проверяем корзину на пустоту после очистки
     this.events.emit('basketData:changed', this._goods);
   }
 
-  getGoodsNumber(): number {                                                    // получить общее количество добавленных товаров в корзину
-    return this._goods.length
+  getGoodsNumber(): number {  // Получает общее количество добавленных товаров в корзину
+    return this._goods.length;
   }
 
-  getTotal(): number {                                                                 // получить общую сумму и стоимость всех товаров, добавленных в корзину
-    return this._goods.reduce((sum, good) => { return sum + good.price }, 0);
+  getTotal(): number {  // Получает общую сумму и стоимость всех товаров в корзине
+    return this.total;
   }
 
-  getIdsOfGoods() {
-    const ids = this._goods.map((good) => { return good.id })
-    return ids
+  getIdsOfGoods(): string[] {
+    return this._goods.map(good => good.id);
   }
 
-  emptyValidation(): boolean {
+  private checkEmpty(): void {
     if (this._goods.length === 0) {
-      return true
+      this.events.emit('basket:empty');
+    } else {
+      this.events.emit('basket:has-items');
     }
-    else { return false }
   }
 }

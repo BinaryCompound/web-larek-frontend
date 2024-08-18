@@ -13,12 +13,12 @@ export class FormContacts extends Form<TFormContacts> implements TFormContacts {
     this.telephoneInput = ensureElement<HTMLInputElement>('.form__input[name=phone]', container);
 
     this.emailInput.addEventListener('input', () => {
-      this.events.emit('email:input'); 
-      this.events.emit('contacts:valid');
+      this.events.emit('email:input', { email: this.emailInput.value }); 
+      this.events.emit('contacts:input', this.getFormData());
     });
     this.telephoneInput.addEventListener('input', () => {
-      this.events.emit('telephone:input');
-      this.events.emit('contacts:valid');
+      this.events.emit('telephone:input', { phone: this.telephoneInput.value });
+      this.events.emit('contacts:input', this.getFormData());
     });
   }
 
@@ -30,24 +30,16 @@ export class FormContacts extends Form<TFormContacts> implements TFormContacts {
     return this.telephoneInput.value;
   }
 
-  get valid() {
-    const emailFilled = this.emailInput.value.trim() !== '';
-    const telephoneFilled = this.telephoneInput.value.trim() !== '';
+  private getFormData(): TFormContacts {
+    return {
+      email: this.emailInput.value,
+      phone: this.telephoneInput.value,
+      valid: this.valid
+    };
+  }
 
-    if (emailFilled && telephoneFilled) {
-      this.errorMessage = '';
-      return true;
-    }
-
-    if (!emailFilled && !telephoneFilled) {
-      this.errorMessage = 'Заполните поля электронной почты и телефона';
-    } else if (!emailFilled) {
-      this.errorMessage = 'Заполните поле электронной почты';
-    } else if (!telephoneFilled) {
-      this.errorMessage = 'Заполните поле телефона';
-    }
-
-    return false;
+  get valid(): boolean {
+    return super.valid;
   }
 
   set valid(value: boolean) {

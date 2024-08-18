@@ -1,12 +1,11 @@
 import './scss/styles.scss';
-import { IAppApi, IProduct, IProductCatalog, IProductItem, TId, TOrderSuccess } from './types';
+import { IAppApi, IProductCatalog, IProductItem, TId, TOrderSuccess } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { AppApi } from './components/appApi';
 import { EventEmitter } from './components/base/events';
 import { ProductItem } from './components/model/productData';
 import { ShoppingCart } from './components/model/basketData';
 import { Order } from './components/model/orderData';
-import { Success } from './components/model/successData';
 import { FormOrder } from './components/view/orderForm';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { ProductItemCatalogue } from './components/view/productCatalog';
@@ -23,8 +22,7 @@ import { VSuccess } from './components/view/succes';
 const events = new EventEmitter();
 const productData = new ProductItem(events);
 const basketData = new ShoppingCart(events);
-const orderData = new Order(events);
-const orderSuccess = new Success(events);
+const orderData = new Order(events, basketData);
 
 // Инициализация элементов представления
 const elements = {
@@ -67,6 +65,7 @@ const loadProducts = async () => {
     }
 };
 
+// Открытие и закрытие модальных окон
 events.on('modal:open', () => views.page.lockScreen(true));
 events.on('modal:close', () => views.page.lockScreen(false));
 
@@ -92,11 +91,11 @@ events.on('cards:changed', (products: IProductItem[]) => {
     views.page.render({ catalog: productsList });
 });
 
-// Обработка открытия модального окна с карточкой товара
+// Открытие модального окна с карточкой товара
 events.on('productModal:open', (dataId: TId) => {
     const cardToPreview = productData.getCard(dataId.id);
     if (cardToPreview) {
-        const invalidPrice = !cardToPreview.price;
+        const invalidPrice = cardToPreview.price === null;
         const buttonValidation = basketData.isInBasket(cardToPreview.id);
         const content = views.cardPreview.render({
             ...cardToPreview,
@@ -128,7 +127,10 @@ events.on('viewCard:deleteFromBasket', (dataId: TId) => {
 events.on('basketData:changed', (dataId: TId) => {
     const cardPreview = productData.getCard(dataId.id);
     if (cardPreview) {
-        views.cardPreview.render({ invalidPrice: !cardPreview.price, buttonValidation: basketData.isInBasket(dataId.id) });
+        views.cardPreview.render({
+            invalidPrice: cardPreview.price === null,
+            buttonValidation: basketData.isInBasket(dataId.id)
+        });
     }
     views.page.render({ counter: basketData.getGoodsNumber() });
 
@@ -140,17 +142,37 @@ events.on('basketData:changed', (dataId: TId) => {
     views.basket.render({ cards: goodsList, total: basketData.getTotal() });
 });
 
-// Обработка открытия корзины и формы заказа
+// Обработка событий пустоты и наличия товаров в корзине
+events.on('basket:empty', () => {
+    const checkoutButton = document.querySelector('.basket__button');
+    if (checkoutButton) {
+        (checkoutButton as HTMLButtonElement).disabled = true;
+    }
+});
+
+events.on('basket:has-items', () => {
+    const checkoutButton = document.querySelector('.basket__button');
+    if (checkoutButton) {
+        (checkoutButton as HTMLButtonElement).disabled = false;
+    }
+});
+
+// Открытие корзины и формы заказа
 events.on('viewBasket:open', () => {
+    const total = basketData.getTotal();
+    const isEmpty = basketData.getGoodsNumber() === 0;
+
     views.modal.render({
-        content: views.basket.render({ total: basketData.getTotal(), emptyCheck: basketData.emptyValidation() })
+        content: views.basket.render({
+            total: total,
+            emptyCheck: isEmpty
+        })
     });
+
     views.modal.open();
 });
 
 events.on('order:open', () => {
-    orderData.total = basketData.getTotal();
-    orderData.items = basketData.getIdsOfGoods();
     views.modal.render({
         content: views.formOrder.render({ valid: views.formOrder.valid, errorMessage: '' })
     });
@@ -200,13 +222,11 @@ events.on('contacts:valid', () => {
 events.on('contacts:submit', async () => {
     const order = orderData.orderFullInfo;
     try {
-        const data: TOrderSuccess = await api.postOrder(order);
-        orderSuccess.orderSuccess = data;
         views.formOrder.clear();
         views.formContacts.clear();
         basketData.clearBasket();
         views.modal.render({
-            content: views.success.render({ message: String(order.total) })
+            content: views.success.render({ message: `Ваш заказ успешно оформлен! Сумма: ${order.total}` })
         });
     } catch (error) {
         console.error(error);

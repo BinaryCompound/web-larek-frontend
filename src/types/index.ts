@@ -15,7 +15,6 @@ export interface IProductItemData {
 // Интерфейс корзины
 export interface IBasketData {
     goods: IProductItem[];
-    total: number;
     isInBasket(id:string): boolean;
     addToBasket(card: IProductItem): void;
     removeFromBasket(id: string): void;
