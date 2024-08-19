@@ -22,7 +22,10 @@ import { VSuccess } from './components/view/succes';
 const events = new EventEmitter();
 const productData = new ProductItem(events);
 const basketData = new ShoppingCart(events);
-const orderData = new Order(events, basketData);
+const orderData = new Order(events);
+
+// Устанавливаем корзину в Order
+orderData.cart = basketData;
 
 // Инициализация элементов представления
 const elements = {

@@ -69,6 +69,15 @@ export interface IProduct {
     description: string;
 }
 
+export interface IOrderFullInfo {
+    payment: PaymentMethod;
+    email: string;
+    phone: string;
+    address: string;
+    total: number;
+    items: string[];
+  }
+
 // Интерфейс представления корзины
 export interface IBasket {
     cards: HTMLElement[];

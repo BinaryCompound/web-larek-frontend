@@ -7,65 +7,62 @@ export class Order implements IOrder {
     private _email: string;
     private _address: string;
     private _phone: string;
+    private _cart: ShoppingCart;
     events: IEvents;
-    private cart: ShoppingCart;
 
-    constructor(events: IEvents, cart: ShoppingCart) {
+    constructor(events: IEvents) {
         this.events = events;
-        this.cart = cart;
+        this._cart = new ShoppingCart(events);  // Инициализируем корзину здесь, если нужно
     }
 
-    //Записывает метод оплаты
-    set payment(type: PaymentMethod) { 
+    set payment(type: PaymentMethod) {
         this._payment = type;
     }
 
-    //Возвращает метод оплаты
     get payment(): PaymentMethod {
         return this._payment;
     }
 
-    //Записывает электронную почту пользователя
     set email(value: string) {
         this._email = value;
     }
 
-    //Возвращает электронную почту пользователя
     get email(): string {
         return this._email;
     }
 
-    //Записывает адрес пользователя
     set address(value: string) {
         this._address = value;
     }
 
-    //Возвращает адрес пользователя
     get address(): string {
         return this._address;
     }
 
-    //Записывает номер телефона пользователя
     set phone(value: string) {
         this._phone = value;
     }
 
-    //Возвращает номер телефона пользователя
     get phone(): string {
         return this._phone;
     }
 
-    // Возвращает общую сумму заказа из корзины
+    set cart(cart: ShoppingCart) {
+        this._cart = cart;
+    }
+
+    get cart(): ShoppingCart {
+        return this._cart;
+    }
+
     get total(): number {
-        return this.cart.getTotal();
+        return this._cart.getTotal();
     }
 
-    // Возвращает массив идентификаторов товаров из корзины
     get items(): string[] {
-        return this.cart.getIdsOfGoods();
+        return this._cart.getIdsOfGoods();
     }
 
-    //Возвращает всю информацию о заказе
     get orderFullInfo() {
         return {
             payment: this._payment,
