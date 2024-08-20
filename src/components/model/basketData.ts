@@ -13,13 +13,13 @@ export class ShoppingCart implements IBasketData {
         return this._goods;
     }
 
-    set goods(cards: IProductItem[]) {
-        this._goods = cards;
-        this.checkEmpty();  // Проверяем корзину на пустоту при изменении товаров
+    set goods(items: IProductItem[]) {
+        this._goods = items;
+        this.checkEmpty();
     }
 
     isInBasket(id: string): boolean {
-        return Boolean(this._goods.find(good => good.id === id));
+        return this._goods.some(good => good.id === id);
     }
 
     checkBasket(id: string): void {
@@ -28,10 +28,12 @@ export class ShoppingCart implements IBasketData {
         }
     }
 
-    addToBasket(card: IProductItem): void {
-        this._goods.push(card);
-        this.checkEmpty();
-        this.events.emit('basketData:changed', { id: card.id });
+    addToBasket(item: IProductItem): void {
+        if (!this.isInBasket(item.id)) {
+            this._goods.push(item);
+            this.checkEmpty();
+            this.events.emit('basketData:changed', { id: item.id });
+        }
     }
 
     removeFromBasket(id: string): void {
@@ -56,6 +58,17 @@ export class ShoppingCart implements IBasketData {
 
     getIdsOfGoods(): string[] {
         return this._goods.map(good => good.id);
+    }
+
+    getOrderFullInfo(payment: string, email: string, phone: string, address: string) {
+        return {
+            payment,
+            email,
+            phone,
+            address,
+            total: this.getTotal(),
+            items: this.getIdsOfGoods()
+        };
     }
 
     private checkEmpty(): void {

@@ -24,9 +24,6 @@ const productData = new ProductItem(events);
 const basketData = new ShoppingCart(events);
 const orderData = new Order(events);
 
-// Устанавливаем корзину в Order
-orderData.cart = basketData;
-
 // Инициализация элементов представления
 const elements = {
     containerPage: ensureElement<HTMLElement>('.page'),
@@ -223,8 +220,13 @@ events.on('contacts:valid', () => {
 
 // Отправка заказа на сервер и обработка успешного завершения
 events.on('contacts:submit', async () => {
-    const order = orderData.orderFullInfo;
     try {
+        const order = basketData.getOrderFullInfo(
+            orderData.payment,
+            orderData.email,
+            orderData.phone,
+            orderData.address
+        ); // Используем метод из ShoppingCart
         views.formOrder.clear();
         views.formContacts.clear();
         basketData.clearBasket();

@@ -47,6 +47,13 @@ export interface IOrder {
     items: string[];
 }
 
+export interface IOrderData {
+    payment: PaymentMethod;
+    email: string;
+    address: string;
+    phone: string;
+}
+
 // Интерфейс успешного заказа
 export interface IOrderSuccess {
     orderSuccess: TOrderSuccess;

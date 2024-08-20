@@ -1,18 +1,15 @@
 import { IEvents } from '../base/events';
-import { IOrder, PaymentMethod } from '../../types';
-import { ShoppingCart } from './basketData';
+import { IOrderData, PaymentMethod } from '../../types';
 
-export class Order implements IOrder {
+export class Order implements IOrderData {
     private _payment: PaymentMethod;
     private _email: string;
     private _address: string;
     private _phone: string;
-    private _cart: ShoppingCart;
     events: IEvents;
 
     constructor(events: IEvents) {
         this.events = events;
-        this._cart = new ShoppingCart(events);  // Инициализируем корзину здесь, если нужно
     }
 
     set payment(type: PaymentMethod) {
@@ -45,32 +42,5 @@ export class Order implements IOrder {
 
     get phone(): string {
         return this._phone;
-    }
-
-    set cart(cart: ShoppingCart) {
-        this._cart = cart;
-    }
-
-    get cart(): ShoppingCart {
-        return this._cart;
-    }
-
-    get total(): number {
-        return this._cart.getTotal();
-    }
-
-    get items(): string[] {
-        return this._cart.getIdsOfGoods();
-    }
-
-    get orderFullInfo() {
-        return {
-            payment: this._payment,
-            email: this._email,
-            phone: this._phone,
-            address: this._address,
-            total: this.total,
-            items: this.items
-        };
     }
 }
