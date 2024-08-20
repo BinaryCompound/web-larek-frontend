@@ -5,6 +5,9 @@ import { Product } from "./product";
 import { categories } from "../../utils/constants";
 
 export class ProductItemCatalogue<TProductCatalog> extends Product<TProductCatalog> implements IProductCatalog {
+  getDetails(): string {
+    throw new Error('Метод не реализован');
+  }
   private _image: HTMLImageElement;
   private _category: HTMLSpanElement;
   private _description: HTMLParagraphElement | null;
@@ -25,11 +28,11 @@ export class ProductItemCatalogue<TProductCatalog> extends Product<TProductCatal
   }
 
   // Реализация геттера и сеттера для image
-  get image(): string {
+  get catalogImage(): string {
     return this._image.src;
   }
 
-  set image(src: string) {
+  set catalogImage(src: string) {
     this._image.src = src;
     this._image.alt = this.title; // Обновляем alt для изображения
   }
@@ -45,11 +48,11 @@ export class ProductItemCatalogue<TProductCatalog> extends Product<TProductCatal
   }
 
   // Реализация геттера и сеттера для description
-  get description(): string {
+  get catalogDescription(): string {
     return this._description ? this._description.textContent ?? '' : '';
   }
 
-  set description(value: string) {
+  set catalogDescription(value: string) {
     if (this._description) {
       this._description.textContent = value;
     }
