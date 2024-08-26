@@ -5,7 +5,7 @@ import { AppApi } from './components/appApi';
 import { EventEmitter } from './components/base/events';
 import { ProductItem } from './components/model/productData';
 import { ShoppingCart } from './components/model/basketData';
-import { Order } from './components/model/orderData';
+import { Order } from './components/model/orderInfo';
 import { FormOrder } from './components/view/orderForm';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { ProductItemCatalogue } from './components/view/productCatalog';
@@ -22,7 +22,7 @@ import { VSuccess } from './components/view/succes';
 const events = new EventEmitter();
 const productData = new ProductItem(events);
 const basketData = new ShoppingCart(events);
-const orderData = new Order(events);
+const orderData = new Order(basketData);
 
 // Инициализация элементов представления
 const elements = {
@@ -221,12 +221,7 @@ events.on('contacts:valid', () => {
 // Отправка заказа на сервер и обработка успешного завершения
 events.on('contacts:submit', async () => {
     try {
-        const order = basketData.getOrderFullInfo(
-            orderData.payment,
-            orderData.email,
-            orderData.phone,
-            orderData.address
-        ); // Используем метод из ShoppingCart
+        const order = orderData.getOrderFullInfo(); // Используем метод из Order
         views.formOrder.clear();
         views.formContacts.clear();
         basketData.clearBasket();

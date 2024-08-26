@@ -2,7 +2,7 @@ import { IProduct } from "../../types/index";
 import { IEvents } from "../base/events";
 import { View } from './View';
 import { ensureElement } from "../../utils/utils";
-import { categories} from "../../utils/constants";
+import { categories } from "../../utils/constants";
 
 export abstract class Product<T> extends View<T> implements IProduct {
     protected _id: string;
