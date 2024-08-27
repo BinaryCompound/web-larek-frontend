@@ -22,7 +22,7 @@ import { VSuccess } from './components/view/succes';
 const events = new EventEmitter();
 const productData = new ProductItem(events);
 const basketData = new ShoppingCart(events);
-const orderData = new Order(basketData);
+const orderData = new Order(basketData, 'cash', '', '', '');
 
 // Инициализация элементов представления
 const elements = {
@@ -74,6 +74,12 @@ events.on('cards:changed', (products: IProductItem[]) => {
     const productsList = products.map(product => {
         try {
             const viewProduct = new ProductItemCatalogue<IProductCatalog>(cloneTemplate(elements.templates.cardCatalog), events);
+
+            // Установка данных через методы
+            viewProduct.setId(product.id);
+            viewProduct.setTitle(product.title);
+            viewProduct.setPrice(product.price ? `${product.price}` : '');
+
             const renderedProduct = viewProduct.render(product);
 
             // Добавление обработчика клика для открытия модального окна
@@ -136,6 +142,12 @@ events.on('basketData:changed', (dataId: TId) => {
 
     const goodsList = basketData.goods.map((good, index) => {
         const productInBasket = new ProductInBasket(cloneTemplate(elements.templates.cardBasket), events);
+        
+        productInBasket.setId(good.id);
+        productInBasket.setTitle(good.title);
+        productInBasket.setPrice(good.price.toString());
+
+
         return productInBasket.render({ ...good, index });
     });
 
@@ -221,7 +233,7 @@ events.on('contacts:valid', () => {
 // Отправка заказа на сервер и обработка успешного завершения
 events.on('contacts:submit', async () => {
     try {
-        const order = orderData.getOrderFullInfo(); // Используем метод из Order
+        const order = orderData.getOrderFullInfo();
         views.formOrder.clear();
         views.formContacts.clear();
         basketData.clearBasket();

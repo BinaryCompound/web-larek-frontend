@@ -1,52 +1,36 @@
-import { IProduct } from "../../types/index";
-import { IEvents } from "../base/events";
-import { View } from './View';
-import { ensureElement } from "../../utils/utils";
-import { categories } from "../../utils/constants";
+import { IProduct } from "../../types/index"; 
+import { IEvents } from "../base/events"; 
+import { View } from './View'; 
+import { ensureElement } from "../../utils/utils"; 
+import { categories } from "../../utils/constants"; 
+ 
+export abstract class Product<T> extends View<T> implements IProduct { 
+    _id: string; 
+    _title: HTMLHeadingElement; 
+    _price: HTMLSpanElement; 
+    image: string; 
+    description: string; 
+    id: string;
+    title: string;
+    price: string;
 
-export abstract class Product<T> extends View<T> implements IProduct {
-    protected _id: string;
-    protected _title: HTMLHeadingElement;
-    protected _price: HTMLSpanElement;
-
-    constructor(container: HTMLElement, events: IEvents) {
+    constructor(container: HTMLElement, events: IEvents) { 
         super(container, events);
-        this._title = ensureElement<HTMLHeadingElement>('.card__title', container);
-        this._price = ensureElement<HTMLSpanElement>('.card__price', container);
-    }
-    image: string;
-    description: string;
+        this._title = ensureElement<HTMLHeadingElement>('.card__title', container); 
+        this._price = ensureElement<HTMLSpanElement>('.card__price', container); 
+    } 
 
-    // Запись id карточки товара
-    set id(value: string) {
+    setId(value: string): void {
         this._id = value;
     }
 
-    // Получение id карточки товара
-    get id() {
-        return this._id;
-    }
-
-    // Запись имени карточки товара
-    set title(value: string) {
+    setTitle(value: string): void {
         this.setText(this._title, value);
     }
 
-    // Получение имени карточки товара
-    get title() {
-        return this._title.textContent ?? '';
-    }
-
-    // Запись цены товара
-    set price(value: string) {
+    setPrice(value: string): void {
         this.setText(this._price, value ? `${value} синапсов` : `Бесценно`);
     }
 
-    // Получение цены товара
-    get price() {
-        return this._price.textContent ?? '';
-    }
-
-    // Абстрактные методы, которые должны быть реализованы в наследниках, если они нужны
-    abstract getDetails(): string;
+    abstract getDetails(): string; 
 }
